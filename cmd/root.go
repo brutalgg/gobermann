@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"net"
 	"time"
 
 	dga "github.com/brutalgg/gobermann/internal/domaingeneratingalgorithm"
@@ -13,9 +15,9 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "gobermann",
-	Version: "",
-	//PersistentPreRun: setup,
+	Use:              "gobermann",
+	Version:          "",
+	PersistentPreRun: setup,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: run,
@@ -45,10 +47,23 @@ func Execute() {
 	}
 }
 
+func setup(cmd *cobra.Command, args []string) {
+	alg, _ := cmd.Flags().GetString("alg")
+	dns, _ := cmd.Flags().GetString("dns")
+
+	if _, err := selectDGA(alg); err != nil {
+		cli.Fatal("%v is not one of the supported algorithms", alg)
+	}
+	// trying to figure out if this test could be better
+	cli.Info("Testing Connection to %v", dns)
+	if _, err := net.Dial("tcp", fmt.Sprintf("%v:53", dns)); err != nil {
+		cli.Fatal("could not connect to server %v", dns)
+	}
+
+}
+
 func run(cmd *cobra.Command, args []string) {
-	// burst delay
-	// delay
-	// burst size
+	// todo implement other flags
 	alg, _ := cmd.Flags().GetString("alg")
 	for {
 		dga, ok := selectDGA(alg)
@@ -59,16 +74,14 @@ func run(cmd *cobra.Command, args []string) {
 		cli.Info("completed burst")
 		time.Sleep(time.Minute)
 	}
+}
 
-	//dga := locky.SeedRNG(0, 1, time.Now())
-
+func burst(burst int, delay int, d dga.DomainGenerator) {
+	// todo implement sending of messages
 	// var msg dns.Msg
 	// fqdn := dns.Fqdn("google.com")
 	// msg.SetQuestion(fqdn, dns.TypeA)
 	// dns.Exchange(&msg, "8.8.8.8:53")
-}
-
-func burst(burst int, delay int, d dga.DomainGenerator) {
 	for i := 0; i < burst; i++ {
 		cli.Info(d.GenerateDomain())
 		time.Sleep(time.Second * time.Duration(delay))
