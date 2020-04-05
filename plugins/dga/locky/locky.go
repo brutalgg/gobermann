@@ -29,7 +29,7 @@ type locky struct {
 	day    uint64
 }
 
-// SeedRNG a
+// SeedRNG Initialize the locky algorithm
 func SeedRNG(pos uint64, configNum int, date time.Time) *locky {
 	return &locky{
 		config: configs[configNum],
@@ -40,7 +40,7 @@ func SeedRNG(pos uint64, configNum int, date time.Time) *locky {
 	}
 }
 
-// GenerateDomain returns domain
+// GenerateDomain Returns a Domain
 func (r *locky) GenerateDomain() string {
 	var k, i uint64
 

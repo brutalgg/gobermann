@@ -26,7 +26,7 @@ func pseudoRandom(v uint64) uint64 {
 	return v
 }
 
-// SeedRNG a
+// SeedRNG Initalize the necurs algorithm
 func SeedRNG(pos uint64, seed uint64, date time.Time) *necurs {
 	return &necurs{
 		year:  uint64(date.Year()),
@@ -37,7 +37,7 @@ func SeedRNG(pos uint64, seed uint64, date time.Time) *necurs {
 	}
 }
 
-// GenerateDomain a
+// GenerateDomain Returns a Domain
 func (r *necurs) GenerateDomain() string {
 	var i uint64
 	tlds := []string{"tj", "in", "jp", "tw", "ac", "cm", "la", "mn", "so", "sh", "sc", "nu", "nf", "mu", "ms", "mx", "ki", "im", "cx", "cc", "tv", "bz", "me", "eu", "de", "ru", "co", "su", "pw", "kz", "sx", "us", "ug", "ir", "to", "ga", "com", "net", "org", "biz", "xxx", "pro", "bit"}

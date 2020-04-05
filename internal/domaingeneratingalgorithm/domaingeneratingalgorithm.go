@@ -1,14 +1,14 @@
 package domaingeneratingalgorithm
 
-// DomainGenerator a
+// DomainGenerator Domain Generator interface for all domain generating algorithms to implement
 type DomainGenerator interface {
 	GenerateDomain() string
 }
 
-// DefaultGenerator s
+// DefaultGenerator An empty domain generator interface
 type DefaultGenerator struct{}
 
-// GenerateDomain s
+// GenerateDomain Returns empty string
 func (b DefaultGenerator) GenerateDomain() string {
 	return ""
 }

@@ -12,7 +12,6 @@ const (
 	seed = "3138C81ED54AD5F8E905555A6623C9C9"
 )
 
-// nymaim2 a
 type nymaim2 struct {
 	hashstring string
 }
@@ -23,7 +22,7 @@ func md5Hash(text string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-// SeedRNG n
+// SeedRNG Initalize the nymaim2 algorithm
 func SeedRNG(date time.Time) *nymaim2 {
 	m := md5Hash(seed)
 	s := fmt.Sprintf("%s%d%d", m, date.Year()%100, date.YearDay()-1)
@@ -37,7 +36,7 @@ func (r *nymaim2) getInt64() int64 {
 	return v
 }
 
-// GenerateDomain a
+// GenerateDomain Returns a Domain
 func (r *nymaim2) GenerateDomain() string {
 	domain := ""
 	domain += firstWords[r.getInt64()%int64(len(firstWords))]
