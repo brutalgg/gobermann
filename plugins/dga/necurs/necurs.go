@@ -6,11 +6,11 @@ import (
 )
 
 type necurs struct {
-	year       uint64
-	month      uint64
-	day        uint64
-	sequenceNR uint64
-	magicNR    uint64
+	year  uint64
+	month uint64
+	day   uint64
+	pos   uint64
+	seed  uint64
 }
 
 func mod64(n1 uint64, n2 uint64) uint64 {
@@ -29,11 +29,11 @@ func pseudoRandom(v uint64) uint64 {
 // SeedRNG a
 func SeedRNG(pos uint64, seed uint64, date time.Time) *necurs {
 	return &necurs{
-		year:       uint64(date.Year()),
-		month:      uint64(date.Month()),
-		day:        uint64(date.Day()),
-		sequenceNR: pos,
-		magicNR:    seed,
+		year:  uint64(date.Year()),
+		month: uint64(date.Month()),
+		day:   uint64(date.Day()),
+		pos:   pos,
+		seed:  seed,
 	}
 }
 
@@ -44,8 +44,8 @@ func (r *necurs) GenerateDomain() string {
 	n := pseudoRandom(r.year)
 	n = pseudoRandom(n + r.month + 43690)
 	n = pseudoRandom(n + (r.day >> 2))
-	n = pseudoRandom(n + r.sequenceNR)
-	n = pseudoRandom(n + r.magicNR)
+	n = pseudoRandom(n + r.pos)
+	n = pseudoRandom(n + r.seed)
 
 	domainLength := mod64(n, 15) + 7
 
@@ -60,6 +60,6 @@ func (r *necurs) GenerateDomain() string {
 	}
 	tld := tlds[mod64(n, uint64(len(tlds)))]
 	domain += "." + tld
-	r.sequenceNR++
+	r.pos++
 	return domain
 }
