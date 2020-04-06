@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// adapted from https://github.com/baderj/domain_generation_algorithms
 type necurs struct {
 	year  uint64
 	month uint64

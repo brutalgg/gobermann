@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// adapted from https://github.com/baderj/domain_generation_algorithms
 const (
 	cf = 0xFFFFFFFF
 	c1 = 0xB11924E1
