@@ -8,6 +8,7 @@ import (
 	dga "github.com/brutalgg/gobermann/internal/domaingeneratingalgorithm"
 	"github.com/brutalgg/gobermann/pkg/cli"
 	"github.com/brutalgg/gobermann/plugins/dga/locky"
+	"github.com/brutalgg/gobermann/plugins/dga/monerodownloader"
 	"github.com/brutalgg/gobermann/plugins/dga/necurs"
 	"github.com/brutalgg/gobermann/plugins/dga/nymaim2"
 	"github.com/miekg/dns"
@@ -16,7 +17,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:              "gobermann",
-	Version:          "1.0alpha",
+	Version:          "1.0.1alpha",
 	PersistentPreRun: setup,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
@@ -36,7 +37,7 @@ func init() {
 	rootCmd.PersistentFlags().IntP("delay", "d", 500, "Delay between requets in a burst in milliseconds")
 	rootCmd.PersistentFlags().IntP("interval", "i", 720, "Delay between bursts in minutes")
 	rootCmd.PersistentFlags().StringP("dns", "s", "1.1.1.1", "Target DNS Server")
-	rootCmd.PersistentFlags().StringP("alg", "a", "locky", "The domain generating algorithm to use.[locky, nymaim2, necurs]")
+	rootCmd.PersistentFlags().StringP("alg", "a", "locky", "The domain generating algorithm to use.[locky, nymaim2, necurs, monero]")
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -116,6 +117,8 @@ func selectDGA(x string) (dga.DomainGenerator, error) {
 		return nymaim2.SeedRNG(time.Now()), nil
 	case "necurs":
 		return necurs.SeedRNG(0, 9, time.Now()), nil
+	case "monero":
+		return monerodownloader.SeedRNG(0, time.Now()), nil
 	}
 
 	return dga.DefaultGenerator{}, errors.New("using empty generator")

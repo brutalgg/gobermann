@@ -1,11 +1,11 @@
 package nymaim2
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/brutalgg/gobermann/pkg/hashing"
 )
 
 // adapted from https://github.com/baderj/domain_generation_algorithms
@@ -17,23 +17,17 @@ type nymaim2 struct {
 	hashstring string
 }
 
-func md5Hash(text string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(text))
-	return hex.EncodeToString(hasher.Sum(nil))
-}
-
 // SeedRNG Initalize the nymaim2 algorithm
 func SeedRNG(date time.Time) *nymaim2 {
-	m := md5Hash(seed)
+	m := hashing.Md5Hash(seed)
 	s := fmt.Sprintf("%s%d%d", m, date.Year()%100, date.YearDay()-1)
 	return &nymaim2{
-		hashstring: md5Hash(s),
+		hashstring: hashing.Md5Hash(s),
 	}
 }
 func (r *nymaim2) getInt64() int64 {
 	v, _ := strconv.ParseInt(r.hashstring[:8], 16, 64)
-	r.hashstring = md5Hash(r.hashstring[7:])
+	r.hashstring = hashing.Md5Hash(r.hashstring[7:])
 	return v
 }
 
