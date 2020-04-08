@@ -1,4 +1,4 @@
-# gobermann
+## gobermann
 
 Basic usage of Gobermann
 
@@ -17,3 +17,8 @@ Flags:
   -l, --loglevel string   Include verbose messages from program execution [error, warn, info, debug] (default "info")
   -v, --version           version for gobermann
 ```
+
+## Purpose
+Gobermann is a utility for emulating traffic patterns seen by the likes of malware using domain generation algorithms to reach out to and identify C2 servers. The Go language was chosen for is flexibility of compliation and deployment.
+
+This project is inspired by [Maltese](https://github.com/HPE-AppliedSecurityResearch/maltese) by Hewlett Packard Enterprise which has not been maintained for many years. 
