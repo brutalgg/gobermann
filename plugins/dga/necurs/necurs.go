@@ -40,7 +40,6 @@ func SeedRNG(pos uint64, seed uint64, date time.Time) *necurs {
 
 // GenerateDomain Returns a Domain
 func (r *necurs) GenerateDomain() string {
-	var i uint64
 	tlds := []string{"tj", "in", "jp", "tw", "ac", "cm", "la", "mn", "so", "sh", "sc", "nu", "nf", "mu", "ms", "mx", "ki", "im", "cx", "cc", "tv", "bz", "me", "eu", "de", "ru", "co", "su", "pw", "kz", "sx", "us", "ug", "ir", "to", "ga", "com", "net", "org", "biz", "xxx", "pro", "bit"}
 	n := pseudoRandom(r.year)
 	n = pseudoRandom(n + r.month + 43690)
@@ -52,8 +51,8 @@ func (r *necurs) GenerateDomain() string {
 
 	domain := ""
 
-	for i = 0; i < domainLength; i++ {
-		n = pseudoRandom(n + i)
+	for i := 0; uint64(i) < domainLength; i++ {
+		n = pseudoRandom(n + uint64(i))
 		ch := mod64(n, 25) + 0x61
 		domain += fmt.Sprintf("%c", ch)
 		n += 0xABBEDF

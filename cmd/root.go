@@ -34,7 +34,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("loglevel", "l", "info", "Include verbose messages from program execution [error, warn, info, debug]")
 	rootCmd.PersistentFlags().BoolP("dryrun", "r", true, "When enabled dns traffic will not be sent over the wire")
 	rootCmd.PersistentFlags().IntP("burst", "b", 15, "Number of requests in a burst of DNS traffic")
-	rootCmd.PersistentFlags().IntP("delay", "d", 500, "Delay between requets in a burst in milliseconds")
+	rootCmd.PersistentFlags().IntP("delay", "d", 500, "Delay between requests in a burst in milliseconds")
 	rootCmd.PersistentFlags().IntP("interval", "i", 720, "Delay between bursts in minutes")
 	rootCmd.PersistentFlags().StringP("dns", "s", "1.1.1.1", "Target DNS Server")
 	rootCmd.PersistentFlags().StringP("alg", "a", "locky", "The domain generating algorithm to use.[locky, nymaim2, necurs, monero]")
