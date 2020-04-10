@@ -1,24 +1,15 @@
 package cmd
 
 import (
-	"errors"
-	"fmt"
-	"time"
-
-	dga "github.com/brutalgg/gobermann/internal/domaingeneratingalgorithm"
 	"github.com/brutalgg/gobermann/pkg/cli"
-	"github.com/brutalgg/gobermann/plugins/dga/locky"
-	"github.com/brutalgg/gobermann/plugins/dga/monerodownloader"
-	"github.com/brutalgg/gobermann/plugins/dga/necurs"
-	"github.com/brutalgg/gobermann/plugins/dga/nymaim2"
-	"github.com/miekg/dns"
+	"github.com/brutalgg/gobermann/pkg/dnsspam"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
 	Use:              "gobermann",
 	Version:          "1.0.1alpha",
-	PersistentPreRun: setup,
+	PersistentPreRun: preChecks,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: run,
@@ -48,7 +39,7 @@ func Execute() {
 	}
 }
 
-func setup(cmd *cobra.Command, args []string) {
+func preChecks(cmd *cobra.Command, args []string) {
 	l, _ := cmd.Flags().GetString("loglevel")
 	switch l {
 	case "error":
@@ -62,14 +53,14 @@ func setup(cmd *cobra.Command, args []string) {
 	}
 
 	alg, _ := cmd.Flags().GetString("alg")
-	if _, err := selectDGA(alg); err != nil {
+	if err := dnsspam.CheckAlgorithm(alg); err != nil {
 		cli.Fatal("%v is not one of the supported algorithms", alg)
 	}
 
 	if cmd.Flags().Changed("dryrun") {
 		dns, _ := cmd.Flags().GetString("dns")
 		cli.Debug("Testing Connection to %v", dns)
-		if err := dnsQuery("no-reply-kt.com", dns); err != nil {
+		if err := dnsspam.DNSQuery("google.com", dns); err != nil {
 			cli.Fatalln(err)
 		}
 	} else {
@@ -78,58 +69,21 @@ func setup(cmd *cobra.Command, args []string) {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	alg, _ := cmd.Flags().GetString("alg")
-	interval, _ := cmd.Flags().GetInt("interval")
+	//l, _ := cmd.Flags().GetString("loglevel")
+	a, _ := cmd.Flags().GetString("alg")
+	i, _ := cmd.Flags().GetInt("interval")
+	b, _ := cmd.Flags().GetInt("burst")
+	d, _ := cmd.Flags().GetInt("delay")
+	s, _ := cmd.Flags().GetString("dns")
 
-	for {
-		dga, err := selectDGA(alg)
-		if err != nil {
-			cli.Fatalln("Empty DGA detected. How did you even hit this message?")
-		}
-		burst(cmd, dga)
-		cli.Infoln("Waiting for interval...")
-		time.Sleep(time.Minute * time.Duration(interval))
+	exec := dnsspam.Config{
+		//LogLevel:  l,
+		Algorithm: a,
+		Interval:  i,
+		Burst:     b,
+		Delay:     d,
+		DNSServer: s,
+		DryRun:    cmd.Flags().Changed("dryrun"),
 	}
-}
-
-func burst(cmd *cobra.Command, d dga.DomainGenerator) {
-	burst, _ := cmd.Flags().GetInt("burst")
-	delay, _ := cmd.Flags().GetInt("delay")
-	dns, _ := cmd.Flags().GetString("dns")
-
-	cli.Infoln("Starting Burst")
-	for i := 0; i < burst; i++ {
-		domain := d.GenerateDomain()
-		cli.Debugln(domain)
-		if cmd.Flags().Changed("dryrun") {
-			dnsQuery(domain, dns)
-		}
-		time.Sleep(time.Millisecond * time.Duration(delay))
-	}
-	cli.Infoln("Burst Completed Successfully")
-}
-
-func selectDGA(x string) (dga.DomainGenerator, error) {
-	switch x {
-	case "locky":
-		return locky.SeedRNG(1, 1, time.Now()), nil
-	case "nymaim2":
-		return nymaim2.SeedRNG(time.Now()), nil
-	case "necurs":
-		return necurs.SeedRNG(0, 9, time.Now()), nil
-	case "monero":
-		return monerodownloader.SeedRNG(0, time.Now()), nil
-	}
-
-	return dga.DefaultGenerator{}, errors.New("using empty generator")
-}
-
-func dnsQuery(f string, server string) error {
-	var msg dns.Msg
-	fqdn := dns.Fqdn(f)
-	msg.SetQuestion(fqdn, dns.TypeA)
-	if _, err := dns.Exchange(&msg, fmt.Sprintf("%v:53", server)); err != nil {
-		return err
-	}
-	return nil
+	exec.Execute()
 }
