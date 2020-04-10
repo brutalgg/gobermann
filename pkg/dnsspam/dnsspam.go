@@ -43,7 +43,7 @@ func (s Config) burst(d dga.DomainGenerator) {
 	for i := 0; i < s.Burst; i++ {
 		domain := d.GenerateDomain()
 		cli.Debugln(domain)
-		if s.DryRun {
+		if !s.DryRun {
 			DNSQuery(domain, s.DNSServer)
 		}
 		time.Sleep(time.Millisecond * time.Duration(s.Delay))

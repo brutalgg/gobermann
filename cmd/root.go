@@ -83,7 +83,7 @@ func run(cmd *cobra.Command, args []string) {
 		Burst:     b,
 		Delay:     d,
 		DNSServer: s,
-		DryRun:    cmd.Flags().Changed("dryrun"),
+		DryRun:    !cmd.Flags().Changed("dryrun"),
 	}
 	exec.Execute()
 }
