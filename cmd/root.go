@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/brutalgg/gobermann/pkg/cli"
+	"github.com/brutalgg/cli"
 	"github.com/brutalgg/gobermann/pkg/dnsspam"
 	"github.com/spf13/cobra"
 )

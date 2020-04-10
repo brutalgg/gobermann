@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/brutalgg/gobermann/pkg/cli"
+	"github.com/brutalgg/cli"
 	dga "github.com/brutalgg/gobermann/pkg/domaingeneratingalgorithm"
 	"github.com/brutalgg/gobermann/plugins/dga/locky"
 	"github.com/brutalgg/gobermann/plugins/dga/monerodownloader"
