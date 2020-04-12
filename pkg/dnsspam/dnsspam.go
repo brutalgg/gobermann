@@ -15,7 +15,7 @@ import (
 )
 
 // Spammer Configuration for running this module
-type Spammer struct {
+type spammer struct {
 	DryRun    bool
 	Burst     int
 	Delay     int
@@ -24,8 +24,20 @@ type Spammer struct {
 	Algorithm string
 }
 
+// New return a new spammer
+func New(dryrun bool, burst int, delay int, interval int, dnsserver string, algorithm string) *spammer {
+	return &spammer{
+		Algorithm: algorithm,
+		Interval:  interval,
+		Burst:     burst,
+		Delay:     delay,
+		DNSServer: dnsserver,
+		DryRun:    dryrun,
+	}
+}
+
 // Run run DNSSpam according to the config struct
-func (s Spammer) Run() {
+func (s spammer) Run() {
 
 	for {
 		dga, err := selectDGA(s.Algorithm)
@@ -38,7 +50,7 @@ func (s Spammer) Run() {
 	}
 }
 
-func (s Spammer) burst(d dga.DomainGenerator) {
+func (s spammer) burst(d dga.DomainGenerator) {
 	cli.Infoln("Starting Burst")
 	for i := 0; i < s.Burst; i++ {
 		domain := d.GenerateDomain()

@@ -76,14 +76,6 @@ func run(cmd *cobra.Command, args []string) {
 	d, _ := cmd.Flags().GetInt("delay")
 	s, _ := cmd.Flags().GetString("dns")
 
-	spam := dnsspam.Spammer{
-		//LogLevel:  l,
-		Algorithm: a,
-		Interval:  i,
-		Burst:     b,
-		Delay:     d,
-		DNSServer: s,
-		DryRun:    !cmd.Flags().Changed("dryrun"),
-	}
+	spam := dnsspam.New(!cmd.Flags().Changed("dryrun"), b, d, i, s, a)
 	spam.Run()
 }
