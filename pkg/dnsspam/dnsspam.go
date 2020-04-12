@@ -14,8 +14,8 @@ import (
 	"github.com/miekg/dns"
 )
 
-// Config Configuration for running this module
-type Config struct {
+// Spammer Configuration for running this module
+type Spammer struct {
 	DryRun    bool
 	Burst     int
 	Delay     int
@@ -24,8 +24,8 @@ type Config struct {
 	Algorithm string
 }
 
-// Execute run DNSSpam according to the config struct
-func (s Config) Execute() {
+// Run run DNSSpam according to the config struct
+func (s Spammer) Run() {
 
 	for {
 		dga, err := selectDGA(s.Algorithm)
@@ -38,7 +38,7 @@ func (s Config) Execute() {
 	}
 }
 
-func (s Config) burst(d dga.DomainGenerator) {
+func (s Spammer) burst(d dga.DomainGenerator) {
 	cli.Infoln("Starting Burst")
 	for i := 0; i < s.Burst; i++ {
 		domain := d.GenerateDomain()
