@@ -60,7 +60,11 @@ func (s spammer) burst(d dga.DomainGenerator) {
 		}
 		time.Sleep(time.Millisecond * time.Duration(s.Delay))
 	}
-	cli.Infoln("Burst Completed Successfully")
+	if s.DryRun {
+		cli.Infoln("Dryrun burst has been completed successfully. Turn off Drynrun to send traffic.")
+	} else {
+		cli.Infoln("Burst Completed Successfully")
+	}
 }
 
 // CheckAlgorithm Checks if a DGA algorithm is supported
