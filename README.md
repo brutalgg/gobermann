@@ -11,10 +11,10 @@ Flags:
   -b, --burst int         Number of requests in a burst of DNS traffic (default 15)
   -d, --delay int         Delay between requests in a burst in milliseconds (default 500)
   -s, --dns string        Target DNS Server (default "1.1.1.1")
-  -r, --dryrun            When enabled dns traffic will not be sent over the wire (default true)
   -h, --help              help for gobermann
   -i, --interval int      Delay between bursts in minutes (default 720)
   -l, --loglevel string   Include verbose messages from program execution [error, warn, info, debug] (default "info")
+  -r, --nodryrun          Send DNS traffic over the wire
   -v, --version           version for gobermann
 ```
 

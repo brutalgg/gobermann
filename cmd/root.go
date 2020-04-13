@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	// 3rd Party
 	"github.com/brutalgg/cli"
-	"github.com/brutalgg/gobermann/pkg/dnsspam"
 	"github.com/spf13/cobra"
+
+	// internal
+	"github.com/brutalgg/gobermann/pkg/dnsspam"
 )
 
 var rootCmd = &cobra.Command{
@@ -23,7 +26,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringP("loglevel", "l", "info", "Include verbose messages from program execution [error, warn, info, debug]")
-	rootCmd.PersistentFlags().BoolP("dryrun", "r", true, "When enabled dns traffic will not be sent over the wire")
+	rootCmd.PersistentFlags().BoolP("nodryrun", "r", false, "Send DNS traffic over the wire")
 	rootCmd.PersistentFlags().IntP("burst", "b", 15, "Number of requests in a burst of DNS traffic")
 	rootCmd.PersistentFlags().IntP("delay", "d", 500, "Delay between requests in a burst in milliseconds")
 	rootCmd.PersistentFlags().IntP("interval", "i", 720, "Delay between bursts in minutes")
@@ -57,7 +60,8 @@ func preChecks(cmd *cobra.Command, args []string) {
 		cli.Fatal("%v is not one of the supported algorithms", alg)
 	}
 
-	if cmd.Flags().Changed("dryrun") {
+	r, _ := cmd.Flags().GetBool("nodryrun")
+	if r {
 		dns, _ := cmd.Flags().GetString("dns")
 		cli.Debug("Testing Connection to %v", dns)
 		if err := dnsspam.DNSQuery("google.com", dns); err != nil {
@@ -75,7 +79,8 @@ func run(cmd *cobra.Command, args []string) {
 	b, _ := cmd.Flags().GetInt("burst")
 	d, _ := cmd.Flags().GetInt("delay")
 	s, _ := cmd.Flags().GetString("dns")
+	r, _ := cmd.Flags().GetBool("nodryrun")
 
-	spam := dnsspam.New(!cmd.Flags().Changed("dryrun"), b, d, i, s, a)
+	spam := dnsspam.New(!r, b, d, i, s, a)
 	spam.Run()
 }
